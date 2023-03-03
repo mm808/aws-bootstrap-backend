@@ -1,0 +1,3 @@
+terraform/set_creds.sh
+terraform/.terraform/providers/
+.DS_Store
