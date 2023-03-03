@@ -19,8 +19,13 @@ variable "region" {
   type        = string
 }
 
-variable "proj1_name" {
-  description = "name for a terraform project, used for bucket prefix and dynamodb table name"
-  type        = string
+variable "project_names" {
+  description = "list of project names used in state bucket prefixes and db tables"
+  type        = list(string)
 }
+
+# variable "proj1_name" {
+#   description = "name for a terraform project, used for bucket prefix and dynamodb table name"
+#   type        = string
+# }
 

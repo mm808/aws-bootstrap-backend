@@ -1,5 +1,9 @@
-env                 = "prod"
-region              = "us-east-1"
-app_name            = "aws-bootstrap-backend"
-owner               = "DevOps team"
-proj1_name          = "project_1"
+env      = "prod"
+region   = "us-east-1"
+app_name = "aws-bootstrap-backend"
+owner    = "DevOps team"
+project_names = [
+  "project_1",
+  "project_2"
+]
+# proj1_name          = "project_1"
