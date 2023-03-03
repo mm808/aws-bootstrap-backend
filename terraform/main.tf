@@ -72,15 +72,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform-state-b
 }
 
 # ~~~ bucket prefixes ~~~ # 
-# -create one for each new terraform project
-# resource "aws_cloudwatch_log_subscription_filter" "cloudwatch-opensearch-lambda-subscription" {
-#   depends_on      = [aws_lambda_permission.allow-cloudwatch]
-#   name            = "cloudwatch-opensearch-lambda-subscription-${var.environment}"
-#   count = length(var.log_group_name)
-#   log_group_name  = var.log_group_name[count.index]
-#   filter_pattern  = ""
-#   destination_arn = aws_lambda_function.cloudwatch-opensearch-lambda.arn
-# }
+# one for each Terraform project
+# controlled through the project_names var
 
 resource "aws_s3_object" "proj_prefixes" {
   bucket       = aws_s3_bucket.terraform-state-bucket.id
@@ -89,13 +82,9 @@ resource "aws_s3_object" "proj_prefixes" {
   content_type = "application/x-directory"
 }
 
-# resource "aws_s3_object" "proj1_name" {
-#   bucket       = aws_s3_bucket.terraform-state-bucket.id
-#   key          = "${var.proj1_name}/"
-#   content_type = "application/x-directory"
-# }
-
 # ~~~ logging bucket ~~~#
+# this receives the Server Access logs of the state file bucket
+
 resource "aws_s3_bucket" "state-logging-bucket" {
   bucket = "monoprice-state-logging-${var.env}"
 }
@@ -131,7 +120,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "state-logging-buc
 }
 
 # ~~~ dynamodb tables ~~~ #
-# -create one for each Terraform project
+# one for each Terraform project
+# controlled through the project_names var
 
 resource "aws_dynamodb_table" "proj_tables" {
   count = length(var.project_names)
@@ -149,20 +139,3 @@ resource "aws_dynamodb_table" "proj_tables" {
     type = "S"
   }
 }
-
-# resource "aws_dynamodb_table" "proj1_name" {
-#   name           = "${var.proj1_name}-terraformlock-${var.env}"
-#   hash_key       = "LockID"
-#   read_capacity  = 2
-#   write_capacity = 2
-
-#   server_side_encryption {
-#     enabled = true
-#   }
-
-#   attribute {
-#     name = "LockID"
-#     type = "S"
-#   }
-# }
-
