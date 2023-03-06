@@ -72,15 +72,19 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform-state-b
 }
 
 # ~~~ bucket prefixes ~~~ # 
-# -create one for each new terraform project
+# one for each Terraform project
+# controlled through the project_names var
 
-resource "aws_s3_object" "proj1_name" {
+resource "aws_s3_object" "proj_prefixes" {
   bucket       = aws_s3_bucket.terraform-state-bucket.id
-  key          = "${var.proj1_name}/"
+  count = length(var.project_names)
+  key          = "${var.project_names[count.index]}/"
   content_type = "application/x-directory"
 }
 
 # ~~~ logging bucket ~~~#
+# this receives the Server Access logs of the state file bucket
+
 resource "aws_s3_bucket" "state-logging-bucket" {
   bucket = "monoprice-state-logging-${var.env}"
 }
@@ -116,9 +120,12 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "state-logging-buc
 }
 
 # ~~~ dynamodb tables ~~~ #
-# -create one for each Terraform project
-resource "aws_dynamodb_table" "proj1_name" {
-  name           = "${var.proj1_name}-terraformlock-${var.env}"
+# one for each Terraform project
+# controlled through the project_names var
+
+resource "aws_dynamodb_table" "proj_tables" {
+  count = length(var.project_names)
+  name           = "${var.project_names[count.index]}-terraformlock-${var.env}"
   hash_key       = "LockID"
   read_capacity  = 2
   write_capacity = 2
@@ -132,4 +139,3 @@ resource "aws_dynamodb_table" "proj1_name" {
     type = "S"
   }
 }
-
