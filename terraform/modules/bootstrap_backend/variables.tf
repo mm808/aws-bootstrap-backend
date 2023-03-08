@@ -1,19 +1,7 @@
-variable "app_name" {
-  description = "application name"
-  type        = string
-  default = "backend-bootstrap-monoprice-dev"
-}
-
 variable "env" {
   description = "environment we are deploying to"
   type        = string
   default = "dev"
-}
-
-variable "owner" {
-  description = "the application owner"
-  type        = string
-  default     = "DevOps Team"
 }
 
 variable "region" {
